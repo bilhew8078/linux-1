@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0
-/*
+/* for KERNEL v4
  * Copyright (C) 2020, ImageCue
  */
 
@@ -389,12 +389,12 @@ static const struct drm_display_mode bananapi_default_mode = {
 		.vtotal		= 1280 + 8 + 4 + 4,
 };
 
-static int jd9365_get_modes(struct drm_panel *panel,struct drm_connector *connector)
+static int jd9365_get_modes(struct drm_panel *panel)
 {
 	struct jd9365 *ctx = panel_to_jd9365(panel);
 	struct drm_display_mode *mode;
 
-	mode = drm_mode_duplicate(connector->dev, &bananapi_default_mode);
+	mode = drm_mode_duplicate(panel->drm, &bananapi_default_mode);
 	if (!mode) {
 		dev_err(&ctx->dsi->dev, "failed to add mode %ux%ux@%u\n",
 			bananapi_default_mode.hdisplay,
@@ -406,10 +406,10 @@ static int jd9365_get_modes(struct drm_panel *panel,struct drm_connector *connec
 	drm_mode_set_name(mode);
 
 	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
-	drm_mode_probed_add(connector, mode);
+	drm_mode_probed_add(panel->connector, mode);
 
-	connector->display_info.width_mm = WIDTHMM;
-	connector->display_info.height_mm = HEIGHTMM;
+	panel->connector->display_info.width_mm = WIDTHMM;
+	panel->connector->display_info.height_mm = HEIGHTMM;
 
 	return 1;
 }
@@ -426,14 +426,14 @@ static int jd9366_dsi_probe(struct mipi_dsi_device *dsi)
 {
 	struct jd9365 *ctx;
 	int ret;
-
+	printk(KERN_NOTICE "BILL: RONBO DRIVER: entering dsi_probe...\n");
 	ctx = devm_kzalloc(&dsi->dev, sizeof(*ctx), GFP_KERNEL);
 	if (!ctx)
 		return -ENOMEM;
 	mipi_dsi_set_drvdata(dsi, ctx);
 	ctx->dsi = dsi;
 
-	drm_panel_init(&ctx->panel, &dsi->dev, &jd9365_funcs, DRM_MODE_CONNECTOR_DSI);
+	drm_panel_init(&ctx->panel);
 
 	ctx->power = devm_regulator_get(&dsi->dev, "power");
 	printk(KERN_NOTICE "BILL: JD9365 DRIVER: just called devm_regulator_get\n");
@@ -443,14 +443,11 @@ static int jd9366_dsi_probe(struct mipi_dsi_device *dsi)
 	}
 
 	ctx->reset = devm_gpiod_get(&dsi->dev, "reset", GPIOD_OUT_LOW);
+	printk(KERN_NOTICE "BILL: RONBO DRIVER: just called get gpiod\n");
 	if (IS_ERR(ctx->reset)) {
 		dev_err(&dsi->dev, "Couldn't get our reset GPIO\n");
 		return PTR_ERR(ctx->reset);
 	}
-
-	ret = drm_panel_of_backlight(&ctx->panel);
-	if (ret)
-		return ret;
 
 	ret = drm_panel_add(&ctx->panel);
 	if (ret < 0)
@@ -466,7 +463,7 @@ static int jd9366_dsi_probe(struct mipi_dsi_device *dsi)
 static int jd9366_dsi_remove(struct mipi_dsi_device *dsi)
 {
 	struct jd9365 *ctx = mipi_dsi_get_drvdata(dsi);
-
+	printk(KERN_NOTICE "BILL: RONBO DRIVER: remove being called\n");
 	mipi_dsi_detach(dsi);
 	drm_panel_remove(&ctx->panel);
 

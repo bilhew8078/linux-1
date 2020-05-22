@@ -52,7 +52,7 @@
 
 				label = "ronbo_panel";
 				reg = <0>;
-				reset-gpios = <&gpio 25 0>;
+				reset-gpios = <&gpio 4 1>;
 				port {
 					panel_dsi_port: endpoint {
 						remote-endpoint = <&dsi_out_port>;

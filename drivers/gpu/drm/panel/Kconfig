@@ -127,7 +127,7 @@ config DRM_PANEL_RAYDIUM_RM68200
 	  720x1280 DSI video mode panel.
 	  
 config DRM_PANEL_RONBO_JD9366
-	tristate "Ronbo 800x1280 DSI 8" panel"
+	tristate "Ronbo 800x1280 DSI 8inch panel"
 	depends on OF
 	depends on DRM_MIPI_DSI
 	depends on BACKLIGHT_CLASS_DEVICE
