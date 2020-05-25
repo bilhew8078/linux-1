@@ -126,6 +126,15 @@ config DRM_PANEL_RAYDIUM_RM68200
 	  Say Y here if you want to enable support for Raydium RM68200
 	  720x1280 DSI video mode panel.
 
+config DRM_PANEL_ETOUCH_JD9365
+	tristate "E-touch 800x1280 DSI 7inch panel"
+	depends on OF
+	depends on DRM_MIPI_DSI
+	depends on BACKLIGHT_CLASS_DEVICE
+	help
+	  Say Y here if you want to enable support for the E-touch
+	  7" display using MIPI DSI 
+
 config DRM_PANEL_RONBO_JD9366
 	tristate "Ronbo 800x1280 DSI 8inch panel"
 	depends on OF

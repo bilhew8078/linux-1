@@ -112,6 +112,7 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
 	mpu6050.dtbo \
 	mz61581.dtbo \
 	ov5647.dtbo \
+	panel-jd9365.dtbo \
 	panel-jd9366.dtbo \
 	papirus.dtbo \
 	pi3-act-led.dtbo \
